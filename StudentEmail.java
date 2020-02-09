@@ -9,9 +9,26 @@ public class StudentEmail {
         id = "";
     }
 
-    public StudentEmail(String name, String id) {
-        this.name = name;
-        this.id = id;
+    public StudentEmail(String name, String id) throws StudentEmailException {
+        // Remove elading and trailing spaces, tabs.
+        name = name.trim();
+        id = id.trim();
+
+        if (name.length() == 0) {
+            // JOptionPane.showMessageDialog (null, "Error: name cannot be blank.");
+            throw new StudentEmailException("Error: name cannot be blank.");
+        }
+
+        else if (id.length() == 0) {
+            // JOptionPane.showMessageDialog (null, "Error: Id cannot be blank.");
+            throw new StudentEmailException("Error: Id cannot be blank.");
+        }
+
+        else {
+            // All is OK, set class data to the values passed in.
+            this.name = name;
+            this.id = id;
+        }
     }
 
     public String getName() {

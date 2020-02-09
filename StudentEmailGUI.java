@@ -31,7 +31,6 @@ public class StudentEmailGUI extends JFrame {
         JPanel flow2Panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JPanel gridPanel = new JPanel(new GridLayout(2, 1));
 
-        // prevent to jpannel to be edit
         studentTextArea.setEditable(false);
 
         flow1Panel.add(idLabel);
@@ -51,33 +50,77 @@ public class StudentEmailGUI extends JFrame {
         add(gridPanel, BorderLayout.SOUTH);
 
         addButton.addActionListener(event -> addStudent());
+        displayAllButton.addActionListener(event -> displayAll());
+        exitButton.addActionListener(event -> exitApplication());
+        deleteButton.addActionListener(event -> deleteStudent());
+    }
 
+    private boolean isStudentIdInLinkedList(String idStr) {
+        boolean inList = false;
+
+        for (StudentEmail stud : studentLinkedList) {
+            if (stud.getId().compareToIgnoreCase(idStr) == 0) {
+                inList = true;
+            }
+        }
+
+        return inList;
     }
 
     private void addStudent() {
-
-        boolean isIDUnique = true;
-
-        for (StudentEmail stud : studentLinkedList) {
-            if (stud.getId().compareTo(idTextField.getText()) == 0) {
-                isIDUnique = false;
-            }
-
-        }
-
-        if (isIDUnique == false) {
+        if (isStudentIdInLinkedList(idTextField.getText()) == true) {
             JOptionPane.showMessageDialog(null, "Error: student ID is already in the database.");
         } else {
-            studentLinkedList.add(new StudentEmail(nameTextField.getText(), idTextField.getText()));
-            studentTextArea.setText("");
+            try {
+                StudentEmail stud = new StudentEmail(nameTextField.getText(), idTextField.getText());
 
-            for (StudentEmail stud : studentLinkedList) {
-                studentTextArea.append(stud + "\n");
+                studentLinkedList.add(stud);
+
+                displayAll();
+
+                nameTextField.setText("");
+                idTextField.setText("");
+
+            } catch (StudentEmailException error) {
+                JOptionPane.showMessageDialog(null, error.toString());
+                // myLabel.setText (error.toString ());
 
             }
 
         }
+    }
 
+    private void deleteStudent() {
+        if (studentLinkedList.size() == 0) {
+            JOptionPane.showMessageDialog(null, "Error: Database is empty.");
+        } else if (isStudentIdInLinkedList(idTextField.getText()) == false) {
+            JOptionPane.showMessageDialog(null, "Error: student ID is not in the database.");
+        } else {
+            for (int s = 0; s < studentLinkedList.size(); s++) {
+                String currId = studentLinkedList.get(s).getId();
+
+                if (currId.compareToIgnoreCase(idTextField.getText()) == 0) {
+                    studentLinkedList.remove(s);
+                }
+            }
+
+            displayAll();
+
+            nameTextField.setText("");
+            idTextField.setText("");
+        }
+    }
+
+    private void displayAll() {
+        studentTextArea.setText("");
+
+        for (StudentEmail stud : studentLinkedList) {
+            studentTextArea.append(stud + "\n");
+        }
+    }
+
+    private void exitApplication() {
+        System.exit(0); // All is OK.
     }
 
     public static void main(String[] args) {
@@ -87,4 +130,4 @@ public class StudentEmailGUI extends JFrame {
         app.setLocation(200, 100);
         app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-}
+} // public class StudentEmailGUI
