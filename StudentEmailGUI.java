@@ -55,12 +55,29 @@ public class StudentEmailGUI extends JFrame {
     }
 
     private void addStudent() {
-        studentLinkedList.add(new StudentEmail(nameTextField.getText(), idTextField.getText()));
-        studentTextArea.setText("");
+
+        boolean isIDUnique = true;
 
         for (StudentEmail stud : studentLinkedList) {
-            studentTextArea.append(stud + "\n");
+            if (stud.getId().compareTo(idTextField.getText()) == 0) {
+                isIDUnique = false;
+            }
+
         }
+
+        if (isIDUnique == false) {
+            JOptionPane.showMessageDialog(null, "Error: student ID is already in the database.");
+        } else {
+            studentLinkedList.add(new StudentEmail(nameTextField.getText(), idTextField.getText()));
+            studentTextArea.setText("");
+
+            for (StudentEmail stud : studentLinkedList) {
+                studentTextArea.append(stud + "\n");
+
+            }
+
+        }
+
     }
 
     public static void main(String[] args) {
